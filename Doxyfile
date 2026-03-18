@@ -1,0 +1,32 @@
+OUTPUT_DIRECTORY = docs
+PROJECT_NAME       = "Polevoy_sem1"
+PROJECT_BRIEF      = "Документация проекта"
+OUTPUT_LANGUAGE    = Russian
+INPUT_ENCODING     = UTF-8
+EXTRACT_ALL        = YES
+FULL_PATH_NAMES    = NO
+STRIP_FROM_PATH    = C:/dev/Polevoy_sem1
+LATEX_SOURCE_CODE  = YES
+PAPER_TYPE         = a4
+
+
+GENERATE_HTML    = NO
+GENERATE_LATEX   = YES
+LATEX_OUTPUT     = latex
+USE_PDFLATEX     = YES
+PDF_HYPERLINKS   = YES
+
+INPUT            = .
+RECURSIVE        = YES
+FILE_PATTERNS    = *.h *.hpp *.hh *.hxx *.c *.cc *.cpp *.cxx
+
+LATEX_HEADER      = latex_header.tex
+LATEX_EXTRA_FILES = latex_header.tex
+EXTRA_PACKAGES = amsmath amssymb amsfonts mathtools microtype
+
+
+
+EXCLUDE          = docs build-msvc vcpkg_installed
+EXCLUDE_PATTERNS = */docs/* */build-msvc/* */vcpkg_installed/*
+
+

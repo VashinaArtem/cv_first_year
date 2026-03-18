@@ -1,0 +1,47 @@
+\documentclass[twoside]{book}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{doxygen} % required by Doxygen-generated content
+\usepackage{makeidx} % for \makeindex and \printindex
+
+% Math and typography
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{mathtools}
+\usepackage{cmap} % better copy/paste/search in PDF
+\usepackage[protrusion=true,expansion=false]{microtype} % disable expansion to avoid bitmap font issue
+\UseMicrotypeSet[protrusion]{basicmath}
+% Map common Greek unicode letters appearing in text to math symbols
+\DeclareUnicodeCharacter{03BC}{\ensuremath{\mu}} % μ
+\DeclareUnicodeCharacter{03C3}{\ensuremath{\sigma}} % σ
+
+\makeatletter
+% Doxygen sometimes emits the macro \+ for discretionary breaks; define as no-op
+\providecommand{\+}{}%
+\newcommand{\vecthreethree}[9]{%
+  \begin{bmatrix}
+    #1 & #2 & #3 \\
+    #4 & #5 & #6 \\
+    #7 & #8 & #9
+  \end{bmatrix}
+}
+\newcommand{\vecthree}[3]{%
+  \begin{bmatrix}
+    #1 \\
+    #2 \\
+    #3
+  \end{bmatrix}
+}
+\renewenvironment{align*}{\aligned}{\endaligned} % fix Doxygen's \\[ ... \begin{align*} ... \end{align*} ... \\] pattern
+\makeatother
+
+\makeindex
+
+\begin{document}
+\hypersetup{unicode=true}
+\frontmatter
+\providecommand{\clearemptydoublepage}{\clearpage{\pagestyle{empty}\cleardoublepage}} % used by doxygen at back matter
+\tableofcontents
+\mainmatter

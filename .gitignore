@@ -1,0 +1,71 @@
+# --- Build output (project-specific) ---
+/build-msvc/
+/build*/
+/cmake-build-*/
+/out/
+/bin/
+/lib/
+
+# --- CMake generated (in case you build in-source) ---
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+install_manifest.txt
+CTestTestfile.cmake
+Testing/
+compile_commands.json
+
+# --- Visual Studio / MSVC ---
+.vs/
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.user
+*.suo
+*.VC.db
+*.VC.VC.opendb
+*.opendb
+*.ipch
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.obj
+
+# --- vcpkg (don’t commit installed packages) ---
+/vcpkg_installed/
+**/vcpkg_installed/
+vcpkg-manifest-install.log
+
+# --- Binaries / libraries (cross-platform) ---
+*.exe
+*.dll
+*.lib
+*.a
+*.so
+*.dylib
+*.o
+
+# --- Doxygen / LaTeX generated output ---
+/docs/latex/
+/docs/html/
+/docs/xml/
+/docs/man/
+/docs/rtf/
+*.aux
+*.log
+*.toc
+*.out
+*.idx
+*.ilg
+*.ind
+*.synctex.gz
+texput.log
+
+# --- OS / editor noise ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/
+.idea/

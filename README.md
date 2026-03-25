@@ -45,7 +45,7 @@ cmake --build build-msvc --config Release -j
 
 ```powershell
 cmake --build build-msvc --target docs --config Release
-start .\docs\html\index.html
+start .\docs\latex\refman.pdf
 ```
 
 
@@ -146,19 +146,19 @@ start .\build-msvc\Polevoy_sem1.sln
 
 ### Документация (Doxygen)
 
-Генерация html-доков из корня проекта:
+Генерация документации из корня проекта:
 ```powershell
 cmake --build build-msvc --target docs --config Release
 ```
 
-Открыть:
+Открыть PDF:
 ```powershell
-start .\docs\html\index.html
+start .\docs\latex\refman.pdf
 ```
 
 Примечания:
 - Цель `docs` доступна только если `doxygen` в PATH (`CMakeLists.txt` проверяет `find_package(Doxygen)`).
-- Настройки берутся из `Doxyfile` (HTML включён, Graphviz не обязателен).
+- Настройки берутся из `Doxyfile` (генерируется LaTeX/PDF, Graphviz не обязателен).
 
 
 ### Типичные проблемы и решения

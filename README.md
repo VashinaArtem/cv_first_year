@@ -20,11 +20,17 @@
 cl
 ```
 
+Укажи путь к vcpkg (замени на свой):
+
+```powershell
+$env:VCPKG_ROOT = "C:/programs/vcpkg"
+```
+
 Сконфигурируй CMake (Visual Studio 2022 + vcpkg toolchain, x64):
 
 ```powershell
 cmake -S . -B build-msvc -G "Visual Studio 17 2022" -A x64 `
-  -DCMAKE_TOOLCHAIN_FILE=C:/programs/vcpkg/scripts/buildsystems/vcpkg.cmake `
+  -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
   -DVCPKG_TARGET_TRIPLET=x64-windows `
   -DCMAKE_BUILD_TYPE=Release
 ```
@@ -45,7 +51,7 @@ cmake --build build-msvc --config Release -j
 
 ```powershell
 cmake --build build-msvc --target docs --config Release
-start .\docs\html\index.html
+start .\docs\latex\refman.pdf
 ```
 
 
@@ -87,15 +93,22 @@ winget install Git.Git
 ```
 
 4) vcpkg
+
+Клонируй в любое удобное место (в примере — `C:/programs/vcpkg`):
 ```powershell
 git clone https://github.com/microsoft/vcpkg C:/programs/vcpkg
-C:/programs/vcpkg/bootstrap-vcpkg.bat
-C:/programs/vcpkg/vcpkg integrate install
+```
+
+Запомни путь — он понадобится при конфигурации CMake:
+```powershell
+$env:VCPKG_ROOT = "C:/programs/vcpkg"   # замени на свой путь, если выбрал другое место
+$env:VCPKG_ROOT/bootstrap-vcpkg.bat
+$env:VCPKG_ROOT/vcpkg integrate install
 ```
 
 5) OpenCV через vcpkg (x64-windows)
 ```powershell
-C:/programs/vcpkg/vcpkg install opencv[core,imgproc,highgui,imgcodecs]:x64-windows
+$env:VCPKG_ROOT/vcpkg install opencv[core,imgproc,highgui,imgcodecs]:x64-windows
 ```
 
 6) (Опционально) Doxygen
@@ -116,10 +129,11 @@ C:/programs/vcpkg/vcpkg install opencv[core,imgproc,highgui,imgcodecs]:x64-windo
 & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64
 ```
 
-2) Конфигурация CMake:
+2) Конфигурация CMake (замени путь к vcpkg на свой, если отличается):
 ```powershell
+$env:VCPKG_ROOT = "C:/programs/vcpkg"
 cmake -S . -B build-msvc -G "Visual Studio 17 2022" -A x64 `
-  -DCMAKE_TOOLCHAIN_FILE=C:/programs/vcpkg/scripts/buildsystems/vcpkg.cmake `
+  -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
   -DVCPKG_TARGET_TRIPLET=x64-windows `
   -DCMAKE_BUILD_TYPE=Release
 ```
@@ -146,25 +160,25 @@ start .\build-msvc\Polevoy_sem1.sln
 
 ### Документация (Doxygen)
 
-Генерация html-доков из корня проекта:
+Генерация документации из корня проекта:
 ```powershell
 cmake --build build-msvc --target docs --config Release
 ```
 
-Открыть:
+Открыть PDF:
 ```powershell
-start .\docs\html\index.html
+start .\docs\latex\refman.pdf
 ```
 
 Примечания:
 - Цель `docs` доступна только если `doxygen` в PATH (`CMakeLists.txt` проверяет `find_package(Doxygen)`).
-- Настройки берутся из `Doxyfile` (HTML включён, Graphviz не обязателен).
+- Настройки берутся из `Doxyfile` (генерируется LaTeX/PDF, Graphviz не обязателен).
 
 
 ### Типичные проблемы и решения
 
 - CMake не находит OpenCV
-  - Проверь путь к toolchain: `-DCMAKE_TOOLCHAIN_FILE=C:/programs/vcpkg/scripts/buildsystems/vcpkg.cmake`
+  - Проверь путь к toolchain: `-DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake"` (где `$env:VCPKG_ROOT` — путь к твоей установке vcpkg)
   - Убедись, что установлен порт: `vcpkg install opencv[core,imgproc,highgui,imgcodecs]:x64-windows`
   - Соответствие разрядности: используй `-A x64` и триплет `x64-windows`
   - Запускай команды из VS Dev Shell x64

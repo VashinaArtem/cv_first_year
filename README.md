@@ -1,4 +1,4 @@
-# Программа для сегментации объектов на микроскопических изображениях бактериальных культур
+# Bacterial Cell Segmentation on Microscopic Images
 
 ![C++17](https://img.shields.io/badge/C%2B%2B-17-blue?logo=c%2B%2B)
 ![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green?logo=opencv)
@@ -6,73 +6,73 @@
 ![vcpkg](https://img.shields.io/badge/vcpkg-manifest-blueviolet)
 ![Platform](https://img.shields.io/badge/platform-Windows%20x64-lightgrey?logo=windows)
 
-Детерминированный алгоритм пакетной сегментации бактерий на микроскопических снимках. Программа автоматически отделяет области с бактериями от фона, артефактов и посторонних объектов, выдавая бинарные маски.
+A deterministic batch segmentation pipeline for bacteria on brightfield microscopy images. The program automatically separates bacterial regions from background, artifacts, and foreign objects, producing binary masks.
 
-**Метрики на тестовом датасете:** IoU = 0.888 ± 0.032 · R = 0.921 ± 0.028
+**Metrics on test dataset:** IoU = 0.888 ± 0.032 · R = 0.921 ± 0.028
 
 ---
 
-## Пример работы
+## Example
 
-| Входное изображение | Результат сегментации |
+| Input image | Segmentation result |
 |:---:|:---:|
-| ![input](<!-- вставь путь к картинке, например: docs/images/input_example.jpg -->) | ![output](<!-- вставь путь к картинке, например: docs/images/output_example.png -->) |
+| ![input](<!-- insert path, e.g.: docs/images/input_example.jpg -->) | ![output](<!-- insert path, e.g.: docs/images/output_example.png -->) |
 
-> Белым — совпадение с эталоном, красным — ложные срабатывания, зелёным — пропущенные объекты.
+> White — matches ground truth, red — false positives, green — missed objects.
 
 ---
 
-## Алгоритм обработки
+## Pipeline
 
 ```
-Входное изображение (JPG/PNG)
+Input image (JPG/PNG)
         │
         ▼
   1. Grayscale + GaussianBlur (5×5)
         │
         ▼
-  2. Локальная бинаризация Оцу по тайлам (300×300 px)
+  2. Local Otsu thresholding per tile (300×300 px)
         │
         ▼
-  3. Морфологическое открытие (эллипс 3×3)
+  3. Morphological opening (ellipse 3×3)
         │
         ▼
-  4. Геометрическая фильтрация контуров (площадь, периметр, форма)
+  4. Geometric contour filtering (area, perimeter, shape ratio)
         │
         ▼
-  5. Фильтрация по яркости (порог μ + 1.2σ)
+  5. Brightness filtering (threshold μ + 1.2σ)
         │
         ▼
-  6. Разделение слипшихся объектов — Watershed
+  6. Splitting merged objects — Watershed
         │
         ▼
-  Бинарная маска PNG → algo_pred/
+  Binary PNG mask → algo_pred/
 ```
 
 ---
 
-## Требования
+## Requirements
 
-| Инструмент | Версия |
+| Tool | Version |
 |---|---|
 | Visual Studio 2022 (MSVC, workload *Desktop C++*) | 17.x |
 | CMake | 3.15+ |
-| vcpkg | любая актуальная |
-| Git | любая |
-| Doxygen | опционально, для документации |
+| vcpkg | any recent |
+| Git | any |
+| Doxygen | optional, for documentation |
 
 ---
 
-## Установка окружения (Windows)
+## Environment Setup (Windows)
 
 <details>
-<summary>Развернуть подробные инструкции</summary>
+<summary>Expand full setup instructions</summary>
 
 **1. Visual Studio 2022**
 ```powershell
 winget install Microsoft.VisualStudio.2022.Community
 ```
-Проверь, что установлен workload **Desktop development with C++**.
+Make sure the **Desktop development with C++** workload is installed.
 
 **2. CMake**
 ```powershell
@@ -84,20 +84,20 @@ winget install Kitware.CMake
 winget install Git.Git
 ```
 
-**4. vcpkg** (клонируй в любое место, здесь пример — `C:/programs/vcpkg`)
+**4. vcpkg** (clone anywhere, example uses `C:/programs/vcpkg`)
 ```powershell
 git clone https://github.com/microsoft/vcpkg C:/programs/vcpkg
-$env:VCPKG_ROOT = "C:/programs/vcpkg"   # замени на свой путь
+$env:VCPKG_ROOT = "C:/programs/vcpkg"   # replace with your path
 & "$env:VCPKG_ROOT/bootstrap-vcpkg.bat"
 & "$env:VCPKG_ROOT/vcpkg" integrate install
 ```
 
-**5. OpenCV через vcpkg**
+**5. OpenCV via vcpkg**
 ```powershell
 & "$env:VCPKG_ROOT/vcpkg" install opencv[core,imgproc,highgui,imgcodecs]:x64-windows
 ```
 
-**6. Doxygen (опционально)**
+**6. Doxygen (optional)**
 ```powershell
 winget install Doxygen.Doxygen
 ```
@@ -106,44 +106,44 @@ winget install Doxygen.Doxygen
 
 ---
 
-## Быстрый старт
+## Quick Start
 
 ```powershell
-# 1. Клонируй репозиторий
+# 1. Clone the repository
 git clone https://github.com/VashinaArtem/cv_first_year.git
 cd cv_first_year
 
-# 2. Открой VS Dev Shell x64
+# 2. Open VS Dev Shell x64
 & "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\Launch-VsDevShell.ps1" -Arch amd64 -HostArch amd64
 
-# 3. Укажи путь к vcpkg (замени на свой)
+# 3. Set your vcpkg path
 $env:VCPKG_ROOT = "C:/programs/vcpkg"
 
-# 4. Сконфигурируй
+# 4. Configure
 cmake -S . -B build-msvc -G "Visual Studio 17 2022" -A x64 `
   -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" `
   -DVCPKG_TARGET_TRIPLET=x64-windows `
   -DCMAKE_BUILD_TYPE=Release
 
-# 5. Собери
+# 5. Build
 cmake --build build-msvc --config Release -j
 
-# 6. Установи
+# 6. Install
 cmake --install build-msvc --config Release --prefix .\install
 ```
 
 ---
 
-## Запуск
+## Running
 
-После установки в папке `install/` будет готовый к запуску пакет:
+After installation, `install/` contains a ready-to-run package:
 
 ```
 install/
 ├── bin/
 │   └── cells_pipeline.exe
 └── control/
-    └── *.jpg   ← входные изображения
+    └── *.jpg   ← input images
 ```
 
 ```powershell
@@ -151,94 +151,94 @@ cd install
 .\bin\cells_pipeline.exe
 ```
 
-Программа читает `.jpg`/`.jpeg`/`.png` из папки `control`, автоматически создаёт папку `algo_pred` и сохраняет туда бинарные PNG-маски с теми же именами файлов.
+The program reads `.jpg`/`.jpeg`/`.png` files from the `control` folder, automatically creates `algo_pred`, and saves binary PNG masks there with the same filenames.
 
-**Ожидаемый вывод:**
+**Expected output:**
 ```
 Successfully processed: control\1.1.1.jpg
 Successfully processed: control\1.1.2.jpg
 ...
 ```
 
-| Код возврата | Значение |
+| Exit code | Meaning |
 |---|---|
-| `0` | Успешная обработка всех изображений |
-| `-1` | Папка `control` не найдена |
+| `0` | All images processed successfully |
+| `-1` | `control` folder not found |
 
 ---
 
-## Структура проекта
+## Project Structure
 
 ```
 cv_first_year/
-├── cells_pipeline.cpp   # основной алгоритм
-├── CMakeLists.txt        # сборка (CMake 3.15+)
-├── Doxyfile              # конфигурация документации
-├── vcpkg.json            # зависимости (OpenCV через vcpkg)
-├── control/              # входные изображения
-└── docs/                 # сгенерированная документация (не в git)
+├── cells_pipeline.cpp   # segmentation pipeline
+├── CMakeLists.txt        # build config (CMake 3.15+)
+├── Doxyfile              # documentation config
+├── vcpkg.json            # dependencies (OpenCV via vcpkg)
+├── control/              # input images
+└── docs/                 # generated documentation (not tracked in git)
 ```
 
 ---
 
-## Документация (Doxygen)
+## Documentation (Doxygen)
 
 ```powershell
 cmake --build build-msvc --target docs --config Release
 start .\docs\latex\refman.pdf
 ```
 
-> Цель `docs` доступна только если Doxygen установлен и найден в PATH.
+> The `docs` target is only available if Doxygen is installed and found in PATH.
 
 ---
 
-## Типичные проблемы
+## Troubleshooting
 
 <details>
-<summary>CMake не находит OpenCV</summary>
+<summary>CMake can't find OpenCV</summary>
 
-- Проверь переменную: `$env:VCPKG_ROOT` должна указывать на реальную папку vcpkg
-- Убедись, что порт установлен: `vcpkg install opencv[core,imgproc,highgui,imgcodecs]:x64-windows`
-- Используй совпадающую разрядность: флаг `-A x64` и триплет `x64-windows`
-- Запускай cmake из **VS Dev Shell x64**
+- Check that `$env:VCPKG_ROOT` points to your actual vcpkg folder
+- Make sure the port is installed: `vcpkg install opencv[core,imgproc,highgui,imgcodecs]:x64-windows`
+- Use matching architecture: `-A x64` flag and `x64-windows` triplet
+- Run cmake from **VS Dev Shell x64**
 
 </details>
 
 <details>
-<summary>Команда `cl` не найдена</summary>
+<summary>Command `cl` not found</summary>
 
-- Запусти PowerShell через **VS Dev Shell x64** (см. команду выше)
-- Проверь, что установлен workload *Desktop development with C++* в Visual Studio
-
-</details>
-
-<details>
-<summary>Цель `docs` отсутствует при сборке</summary>
-
-- Установи Doxygen и добавь в PATH
-- Пересобери конфигурацию CMake после установки (`cmake -S . -B build-msvc ...`)
+- Open PowerShell via **VS Dev Shell x64** (see command above)
+- Verify that *Desktop development with C++* workload is installed in Visual Studio
 
 </details>
 
 <details>
-<summary>Чистая пересборка</summary>
+<summary>`docs` target missing during build</summary>
+
+- Install Doxygen and add it to PATH
+- Re-run CMake configuration after installing Doxygen (`cmake -S . -B build-msvc ...`)
+
+</details>
+
+<details>
+<summary>Clean rebuild</summary>
 
 ```powershell
 Remove-Item -Recurse -Force build-msvc
-# затем повтори шаги конфигурации и сборки
+# then repeat the configure and build steps
 ```
 
 </details>
 
 ---
 
-## Технические детали
+## Technical Details
 
-| Параметр | Значение |
+| Parameter | Value |
 |---|---|
-| Язык | C++17 |
-| Компилятор | MSVC (Visual Studio 17 2022) |
-| Платформа | Windows x64 |
-| Зависимости | `opencv_core`, `opencv_imgproc`, `opencv_imgcodecs`, `opencv_highgui` |
-| Менеджер пакетов | vcpkg (manifest mode, `vcpkg.json`) |
-| Документация | Doxygen → LaTeX → PDF |
+| Language | C++17 |
+| Compiler | MSVC (Visual Studio 17 2022) |
+| Platform | Windows x64 |
+| Dependencies | `opencv_core`, `opencv_imgproc`, `opencv_imgcodecs`, `opencv_highgui` |
+| Package manager | vcpkg (manifest mode, `vcpkg.json`) |
+| Documentation | Doxygen → LaTeX → PDF |

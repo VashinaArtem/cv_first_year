@@ -16,7 +16,7 @@ A deterministic batch segmentation pipeline for bacteria on brightfield microsco
 
 | Input image | Segmentation result |
 |:---:|:---:|
-| ![input](<!-- insert path, e.g.: docs/images/input_example.jpg -->) | ![output](<!-- insert path, e.g.: docs/images/output_example.png -->) |
+| ![input](photos/1.1.1_init.jpg) | ![output](photos/1.1.1_predict.png) |
 
 > White — matches ground truth, red — false positives, green — missed objects.
 
